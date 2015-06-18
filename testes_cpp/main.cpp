@@ -15,11 +15,6 @@ static const char LG_IP[] = "10.7.204.2";
 #define DEBUG_MODE 1
 
 
-void  login(char senha[20]){
-    printf("Digite a senha: ");
-    scanf ("%s", senha);
-}
-
 /*Abrir arquivo com número de pessoas e calcular temperatura */
 void getTemp(int &temp){
 
@@ -40,8 +35,8 @@ int main(int argc, char *argv[])
       }
 
       endereco.sin_family = AF_INET;
-      endereco.sin_port = htons(4325);  //MUDAR PARA LG_PORTA
-      endereco.sin_addr.s_addr = inet_addr("127.0.0.1"); // MUDAR PARA LG_IP
+      endereco.sin_port = htons(LG_PORTA);  //MUDAR PARA LG_PORTA
+      endereco.sin_addr.s_addr = inet_addr(LG_IP); // MUDAR PARA LG_IP
       bzero( &( endereco.sin_zero ), 8);
  
       if ( connect (socketId, (struct sockaddr *)&endereco, sizeof(struct sockaddr)) == -1 )
@@ -81,9 +76,9 @@ int main(int argc, char *argv[])
           /*Packet Handle*/
           Pacote->packetHandle();
 
-          getTemp(temp);
+          //getTemp(temp);
 
-          Pacote->setData(temp);
+          //Pacote->setTemp(temp);
      
           /* Enviar novos dados */  
           if ( send (socketId, servP, size, 0) == -1 )

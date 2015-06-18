@@ -1,7 +1,7 @@
 #include "packet2.h"
 
 packet::packet(){
-	packet_count = 0;
+    packet_count = 0;
 }
 
 packet::~packet(){
@@ -9,43 +9,43 @@ packet::~packet(){
 }
 
 void packet::getServerPacket(u8 *pack){
-	printf("serverPacket: ");
-	for (int i = 0; i < packet_count; ++i){
-		pack[i] = serverPacket[i];
-		fprintf(stderr, " %X", serverPacket[i]);
-	}
+    printf("serverPacket: ");
+    for (int i = 0; i < packet_count; ++i){
+        pack[i] = serverPacket[i];
+        fprintf(stderr, " %X", serverPacket[i]);
+    }
 }
 
 void packet::setServerPacket(u8 *pack){
-	for (int i = 0; i < packet_count; ++i)
-		serverPacket[i] = pack[i];
+    for (int i = 0; i < packet_count; ++i)
+        serverPacket[i] = pack[i];
 }
 
 int packet::getPacketCount(){
-	return packet_count;
+    return packet_count;
 }
 
 // Limpa os pacotes
 void packet::clearPacket(){
-	memset(serverPacket, 0x0, 50);
+    memset(serverPacket, 0x0, 50);
     packet_count = 0;
 }
 
 // Cabeça do Pacote 1
 void packet::writeHeader_1(u32 HEADER){
-	memcpy(serverPacket, &HEADER, sizeof(HEADER));
+    memcpy(serverPacket, &HEADER, sizeof(HEADER));
     packet_count += 4;
 }
 
 // Cabeça do Pacote 2
 void packet::writeHeader_2(u32 HEADER){
-	memcpy(serverPacket + 4, &HEADER, sizeof(HEADER));
+    memcpy(serverPacket + 4, &HEADER, sizeof(HEADER));
     packet_count += 4;
 }
 
 // Escreve um byte
 void packet::writeByte(u8 b){
-	serverPacket[packet_count] = b;
+    serverPacket[packet_count] = b;
     packet_count++;
 }
 
@@ -98,28 +98,32 @@ u8  packet::readByte(){
 /* Pacotes de Comunicação entre Cliente/Servidor */
 // Pacote para fazer Login
 void packet::packet_Login(){
-    /* Onde o nosso login fica salvo ! */
-    char superuser[20];
-    /* Limpa a string do login ! */
-    memset(superuser, 0, 20);
 
-    printf("Digite a senha do super-user:\n");
-    scanf("%s", superuser);
-    //printf("%s", superuser);
-
-    /* Pacote com o login do cliente, lembre-se que isso é para super user ! */
-    /*OBS (MC): ESSES DADOS SÃO SÓ PARA O LOGIN? AO FINAL DEVO ACRESCENTAR A SENHA QUE ESTÁ ARMAZENADA
-    EM SUPERUSER?*/
     writeInt(CLIENT_PACKET_UNK); // Pacote desconhecido, pode ser um head
     writeInt(CLIENT_PACKET_LOGIN_SEND); // Provavelmente o header para Login
-    writeByte(0x09);
-    writeShort(0x0DBF);
-    writeInt(0x65747365);
-    writeByte(0x74);
-    writeShort(0x0A0D); // Desconhecido
-    writeByte(0x1C); // Checksum ?   /*VERIFICAR CODIGO DO CHECKSUM NO JAVA*/ 
-
+    writeByte(0x0D);
+    writeShort(0xBB0D);
+    writeInt(0x64696769);   //SENHA
+    writeInt(0x74616C32);   //SENHA
+    writeByte(0x31);        //SENHA
+    writeByte(0x0D);    
+    writeShort(0x0A30); // Desconhecido
+    writeByte(0x1C); // Checksum ?   ????????
 }
+
+/*
+FF FE FE FF
+E7 00 00 00
+0D BB 0D
+64 69 67 69 74 61 6C 32 31
+0D 0A 30
+
+RECEBER
+FF FE FE FF
+E7 00 00 00
+0D BB
+
+*/
 
 /* Analisa cada pacote e sua estrutura para saber como 
 tratar cada um */
@@ -136,8 +140,16 @@ void packet::packetHandle(){
     }
 }
 
-void packet::setData(u32 temp){
- 	/*DESCOBRIR COMO CRIAR O PACOTE COM AS INFORMAÇÕES:
- 		--> CODIGO PRA ALTERAR A TEMPERATURA
- 		--> VALOR DESEJADO DA TEMPERATURA*/
+void packet::setTemp(u32 temp){
+    /*  ON = 0x4F4E;
+        OFF = 0x4F4646;
+    */
+
+    clearPacket();
+    writeInt(CLIENT_PACKET_UNK);
+    writeByte(0x34);    //Comando para: Ligar, desligar, alterar temperatura
+    writeByte(0x00);    //Padrão
+    writeShort(0x0000); //Padrão
+    writeShort(0xee49); //CHECKSUM == VARIÁVEL!!!!!!!!!!!!
+
  }

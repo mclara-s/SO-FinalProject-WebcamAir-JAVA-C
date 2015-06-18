@@ -18,7 +18,7 @@ enum PACKET_SERVER {
 
 enum PACKET_CLIENT {
     CLIENT_PACKET_UNK        = 0xFFFEFEFF,
-    CLIENT_PACKET_LOGIN_SEND = 0x000000E7,
+    CLIENT_PACKET_LOGIN_SEND = 0xE7000000, // OU Ox000000E7 ?
 };
 
 
@@ -64,7 +64,7 @@ public:
 	tratar cada um */
 	void packetHandle();
 
-	void setData(u32 temp);
+	void setTemp(u32 temp);
 
 };
 
