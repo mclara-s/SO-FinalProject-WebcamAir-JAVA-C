@@ -1,0 +1,7 @@
+Classes possivelmente utilizadas:
+
+	bluezoneFC::network::BasicSocket.class::sendMsg
+	bluezoneFC::ConfigController.class::sendSvcnetInfo
+	bluezoneFC::ConfigController.class::sendNetworkInfo
+	bluezoneFC::protocol::Command  (possui atributos header, body e checksum);
+	bluezoneFC::data::AWHPinfo.class::setCommand	

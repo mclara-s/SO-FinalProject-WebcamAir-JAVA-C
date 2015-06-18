@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <winsock2.h>
+//#include <winsock2.h>
 
 /* Pacote a ser enviado para o cliente ! */
 extern u8 serverPacket[50];
